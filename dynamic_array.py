@@ -99,7 +99,7 @@ class DynamicArray:
 
     def is_empty(self) -> bool:
         """
-        Return True if array is empty / False otherwise
+        Return True is array is empty / False otherwise
         DO NOT CHANGE THIS METHOD IN ANY WAY
         """
         return self._size == 0
@@ -264,7 +264,7 @@ def find_mode(arr: DynamicArray) -> tuple[DynamicArray, int]:
                 found = True
                 break
         if not found:
-            mode_count.append((value, 1))
+            mode_count.append((value, 1))  # Change list to tuple
             if max_frequency == 0:
                 max_frequency = 1
 
