@@ -131,7 +131,7 @@ class DynamicArray:
         """
         Resize the internal array to the new capacity
         """
-        if new_capacity < self._size:
+        if new_capacity < self._size or new_capacity < 1:
             return
 
         new_data = StaticArray(new_capacity)
@@ -230,14 +230,15 @@ class DynamicArray:
         if self._size == 0:
             return initializer
 
-        it = iter(self)
-        if initializer is None:
-            value = next(it)
+        value = initializer
+        if value is None:
+            value = self._data[0]
+            start_index = 1
         else:
-            value = initializer
+            start_index = 0
 
-        for element in it:
-            value = reduce_func(value, element)
+        for i in range(start_index, self._size):
+            value = reduce_func(value, self._data[i])
 
         return value
 
@@ -249,22 +250,27 @@ def find_mode(arr: DynamicArray) -> tuple[DynamicArray, int]:
         return DynamicArray(), 0
 
     mode_array = DynamicArray()
-    mode_count = {}
     max_frequency = 0
+    mode_count = DynamicArray()
 
     for i in range(arr.length()):
         value = arr[i]
-        if value in mode_count:
-            mode_count[value] += 1
-        else:
-            mode_count[value] = 1
+        found = False
+        for j in range(mode_count.length()):
+            if mode_count[j][0] == value:
+                mode_count[j][1] += 1
+                if mode_count[j][1] > max_frequency:
+                    max_frequency = mode_count[j][1]
+                found = True
+                break
+        if not found:
+            mode_count.append([value, 1])
+            if max_frequency == 0:
+                max_frequency = 1
 
-        if mode_count[value] > max_frequency:
-            max_frequency = mode_count[value]
-
-    for key, value in mode_count.items():
-        if value == max_frequency:
-            mode_array.append(key)
+    for i in range(mode_count.length()):
+        if mode_count[i][1] == max_frequency:
+            mode_array.append(mode_count[i][0])
 
     return mode_array, max_frequency
 
